@@ -38,14 +38,19 @@ char *check_cmd(t_env *env, char *executable)
 		while (paths[i])
 		{
 			tmp = ft_strjoin(paths[i++], "/");
-			tmp1 = tmp;
-			tmp = ft_strjoin(tmp, executable);
-			free(tmp1);
+			tmp1 = ft_strdup(tmp);
+			ft_strdel(&tmp);
+			tmp = ft_strjoin(tmp1, executable);
+			ft_strdel(&tmp1);
 			if (access(tmp, F_OK) != -1)
+			{
+				free_array(&paths);
 				return (tmp);
+			}
 		}
+		free_array(&paths);
 	}
-	return (executable);
+	return (ft_strdup(executable));
 }
 
 void		check_file_perm(char *path)
@@ -67,31 +72,33 @@ void		check_file_perm(char *path)
 
 void	exec_cmd(char *cmd ,char **cmdargs, t_env **env)
 {
-	char *exec;
+	char	**env_arr;
 	int pid;
-	if (get_env(env, "PATH"))
-		exec = check_cmd(*env, cmdargs[0]);
-	printf("EXEC CMD : [%s] \n", exec);
+
+	env_arr = NULL;
+	env_arr = env_to_array((*env));
 	if ((pid = fork()))
 		wait(0);
 	else
 	{
-		if (execve(exec, cmdargs, env_to_array(*env)) == -1)
+		if (execve(cmd, cmdargs, env_arr) == -1)
 		{
 			check_file_perm(cmdargs[0]);
 			exit(0);
 		}
 	}
-	
+	free_array(&env_arr);
 }
 
 void	handle_cmd(char **cmd, t_env **env)
 {
 	char **cmdargs;
 	char **environ;
+	char	*fullpath;
 	int i;
 
 	cmdargs = NULL;
+	fullpath = NULL;
 	i = 0;
 	cmdargs = ft_strsplitstr(*cmd, "\r\t \"");
 	if (!cmdargs)
@@ -101,7 +108,15 @@ void	handle_cmd(char **cmd, t_env **env)
 	if (check_builtins(cmdargs[0]))
 		exec_builtins(cmd ,cmdargs[0], cmdargs, env);
 	else
-		exec_cmd(*cmd, cmdargs, env);
+	{
+		if (get_env(env, "PATH"))
+			fullpath = check_cmd(*env, cmdargs[0]);
+		else
+			fullpath = ft_strdup(cmdargs[0]);
+		exec_cmd(fullpath, cmdargs, env);
+		ft_strdel(&fullpath);
+	}
+	free_array(&cmdargs);
 }
 
 void	init_shell(t_env **env)
@@ -132,4 +147,6 @@ int main(int ac, char **av, char **environ)
 	
 	copy_env(&env, environ);
 	init_shell(&env);
+	free_env(&env);
+	return (0);
 }

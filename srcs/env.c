@@ -71,13 +71,14 @@ t_env	*get_env(t_env **env,char *key)
 void 	copy_env(t_env **env, char **environ)
 {
 	char **arr;
-	arr = NULL;
 	int i;
+
+	arr = NULL;
 	i = -1;
 	while (environ[++i] != NULL)
 	{
 		arr = ft_strsplit(environ[i], '=');
 		env_append(env, new_env(arr[0], arr[1]));
-		free(arr);
+		free_array(&arr);
 	}
 }
