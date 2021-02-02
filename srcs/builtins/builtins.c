@@ -17,18 +17,18 @@ int check_builtins(char *cmd)
 	return (0);
 }
 
-void exec_builtins(char **input, char *cmd, char **cmdargs, t_env **env)
+void exec_builtins(char **input, char *cmd, char ***cmdargs, t_env **env)
 {
 	if (ft_strcmp("setenv", cmd) == 0)
-			ft_setenv(cmdargs,env);
+			ft_setenv(*cmdargs,env);
 	if (ft_strcmp("exit", cmd) == 0)
-		ft_exit(NULL,env,input);
+		ft_exit(cmdargs,env,input);
 	if (ft_strcmp("cd", cmd) == 0)
-		ft_cd(cmdargs, env);
+		ft_cd(*cmdargs, env);
 	if (ft_strcmp("unsetenv", cmd) == 0)
-		ft_unsetenv(cmdargs, env);
+		ft_unsetenv(*cmdargs, env);
 	if (ft_strcmp("echo", cmd) == 0)
-		ft_echo(cmdargs);
+		ft_echo(*cmdargs);
 	if (ft_strcmp("env", cmd) == 0)
 		ft_env(*env);
 }

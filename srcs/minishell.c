@@ -37,16 +37,18 @@ char *check_cmd(t_env *env, char *executable)
 		i = 0;
 		while (paths[i])
 		{
-			tmp = ft_strjoin(paths[i++], "/");
-			tmp1 = ft_strdup(tmp);
-			ft_strdel(&tmp);
-			tmp = ft_strjoin(tmp1, executable);
-			ft_strdel(&tmp1);
+			tmp = ft_strnew((int)ft_strlen(paths[i]) + 1 + (int)ft_strlen(executable));
+			ft_strcpy(tmp, paths[i++]);
+			ft_strcat(tmp, "/");
+			ft_strcat(tmp, executable);
 			if (access(tmp, F_OK) != -1)
 			{
-				free_array(&paths);
+				if (paths)
+					free_array(&paths);
 				return (tmp);
 			}
+			else
+				free(tmp);
 		}
 		free_array(&paths);
 	}
@@ -106,7 +108,7 @@ void	handle_cmd(char **cmd, t_env **env)
 	handle_exp(cmdargs, env);
 	printf("ENTERD CMD : [%s] \n", cmdargs[0]);
 	if (check_builtins(cmdargs[0]))
-		exec_builtins(cmd ,cmdargs[0], cmdargs, env);
+		exec_builtins(cmd ,cmdargs[0], &cmdargs, env);
 	else
 	{
 		if (get_env(env, "PATH"))

@@ -21,7 +21,7 @@ void 				copy_env(t_env **env, char **environ);
 t_env				*get_env(t_env **env,char *key);
 
 void 				exec_builtins(char **input, char *cmd,\
-								char **cmdargs, t_env **env);
+								char ***cmdargs, t_env **env);
 int					check_builtins(char *cmd);
 void				ft_exit(char ***final, t_env **env, char **input);
 void				ft_cd(char **cmdargs, t_env **env);
