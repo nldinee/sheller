@@ -28,31 +28,48 @@ int check_errs(char *str)
 	}
 }
 
+static void swap_env(t_env **env, char *key, char *value)
+{
+	env_delete(env, key);
+	env_append(env, new_env(key, value));
+}
+
 void		ft_cd(char **cmdargs, t_env **env)
 {
 	char buff[4096];
-	t_env *e;
-	char *tmp;
+	t_env *_env;
+	t_env *pwd;
+	t_env *oldpwd;
+	getcwd(buff, 4096);
+
 	if (!cmdargs[1])
-	{
-		e = get_env(env, "HOME");
-		if (e)
-			chdir(e->value);
+	{	
+		_env = get_env(env, "HOME");
+		if (!_env)
+			ft_putendl("HOME not set.");
 		else
-			ft_putendl("cd: HOME not set");	
+		{
+			chdir(_env->value);
+			swap_env(env, "PWD", _env->value);
+		}
 	}
-	else if (cmdargs[1] && cmdargs[1][0] == '-')
-		chdir(get_env(env, "OLDPWD")->value);
-	else
+	else if (cmdargs[1][0] == '-')
 	{
-		if (check_errs(cmdargs[1]))
-			chdir(cmdargs[1]);
+		oldpwd = get_env(env, "OLDPWD");
+		if (!oldpwd)
+			ft_putendl("OLDPWD not set");
 		else
-			return ;
+		{
+				chdir(oldpwd->value);
+				swap_env(env, "OLDPWD", buff);
+		}
 	}
-	tmp = get_env(env, "PWD")->value;
-	get_env(env, "PWD")->value = ft_strdup(getcwd(buff,4096));
-	free(get_env(env, "OLDPWD")->value);
-	get_env(env, "OLDPWD")->value = ft_strdup(tmp);
-	free(tmp);
+	else if (check_errs(cmdargs[1]))
+	{
+		pwd = get_env(env, "PWD");
+		if (!pwd)
+			env_append(env, new_env("PWD", cmdargs[1]));
+		chdir(cmdargs[1]);
+		swap_env(env, "OLDPWD", buff);
+	}
 }

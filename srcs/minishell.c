@@ -125,14 +125,14 @@ void	init_shell(t_env **env)
 {
 	char *cmd;
 	char *path;
-
+	char buff[1024];
 	cmd = NULL;
 	path = NULL;
 	while (1)
 	{
-		path = get_env(env,"PWD")->value;
-		if (path)
-			ft_putstr(path);
+		getcwd(buff, 1024);
+		
+		ft_putstr(buff);
 		ft_putstr(" -> ");
 		ft_getline(0, &cmd);
 		handle_cmd(&cmd, env);
@@ -146,7 +146,11 @@ int main(int ac, char **av, char **environ)
 	t_env *tmp;
 	env = NULL;
 	tmp = NULL;
-	
+	if (*environ == NULL)
+	{
+		ft_putendl("Enviroment variable are not set");
+		exit(1);
+	}
 	copy_env(&env, environ);
 	init_shell(&env);
 	free_env(&env);

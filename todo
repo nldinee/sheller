@@ -1,0 +1,6 @@
+fix setenv
+fix cd errors
+	- check home
+	- check oldpwd
+	- check pwd if not set it
+norm
