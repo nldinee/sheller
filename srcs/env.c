@@ -40,6 +40,8 @@ void env_delete(t_env **env, char *key)
 	if (tmp != NULL && ft_strcmp(tmp->key,key) == 0)
 	{
 		*env = tmp->next;
+		tmp->value ? free(tmp->value) : NULL;
+		tmp->key ? free(tmp->key) : NULL;
 		free(tmp);
 		return;
 	}
@@ -51,6 +53,8 @@ void env_delete(t_env **env, char *key)
 	if (tmp == NULL)
 		return;
 	prev->next = tmp->next;
+	tmp->value ? free(tmp->value) : NULL;
+	tmp->key ? free(tmp->key) : NULL;
 	free(tmp);
 }
 

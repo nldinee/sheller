@@ -31,6 +31,7 @@ int check_errs(char *str)
 static void swap_env(t_env **env, char *key, char *value)
 {
 	env_delete(env, key);
+	printf(">>>>>>>>>>> What ! m joking !\n");
 	env_append(env, new_env(key, value));
 }
 
