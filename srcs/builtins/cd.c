@@ -31,7 +31,6 @@ int check_errs(char *str)
 static void swap_env(t_env **env, char *key, char *value)
 {
 	env_delete(env, key);
-	printf(">>>>>>>>>>> What ! m joking !\n");
 	env_append(env, new_env(key, value));
 }
 
@@ -45,8 +44,7 @@ void		ft_cd(char **cmdargs, t_env **env)
 
 	if (!cmdargs[1])
 	{	
-		_env = get_env(env, "HOME");
-		if (!_env)
+		if (!(_env = get_env(env, "HOME")))
 			ft_putendl("HOME not set.");
 		else
 		{

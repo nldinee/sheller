@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/21 17:04:20 by nabdelba          #+#    #+#             */
+/*   Updated: 2021/03/21 17:04:20 by nabdelba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-char **env_to_array(t_env *env)
+char		**env_to_array(t_env *env)
 {
-	char **array;
-	char *envi;
-	int i;
+	char	**array;
+	char	*envi;
+	int		i;
 
 	i = 0;
 	array = (char **)ft_memalloc(sizeof(char *) * list_len(env) + 1);
@@ -22,13 +34,13 @@ char **env_to_array(t_env *env)
 	return (array);
 }
 
-char *check_cmd(t_env *env, char *executable)
+char		*check_cmd(t_env *env, char *executable)
 {
-	char *path;
-	char **paths;
-	char *tmp;
-	char *tmp1;
-	int i;
+	char	*path;
+	char	**paths;
+	char	*tmp;
+	char	*tmp1;
+	int		i;
 
 	if (executable[0] != '.')
 	{
@@ -59,7 +71,7 @@ void		check_file_perm(char *path)
 {
 	if ((access(path, F_OK) != -1))
 	{
-		if (access(path, X_OK) )
+		if (access(path, X_OK))
 		{
 			ft_putstr(path);
 			ft_putendl(": Permission Denied.");
@@ -72,10 +84,10 @@ void		check_file_perm(char *path)
 	}
 }
 
-void	exec_cmd(char *cmd ,char **cmdargs, t_env **env)
+void		exec_cmd(char *cmd, char **cmdargs, t_env **env)
 {
 	char	**env_arr;
-	int pid;
+	int		pid;
 
 	env_arr = NULL;
 	env_arr = env_to_array((*env));
@@ -92,12 +104,12 @@ void	exec_cmd(char *cmd ,char **cmdargs, t_env **env)
 	free_array(&env_arr);
 }
 
-void	handle_cmd(char **cmd, t_env **env)
+void		handle_cmd(char **cmd, t_env **env)
 {
-	char **cmdargs;
-	char **environ;
+	char	**cmdargs;
+	char	**environ;
 	char	*fullpath;
-	int i;
+	int		i;
 
 	cmdargs = NULL;
 	fullpath = NULL;
@@ -106,9 +118,8 @@ void	handle_cmd(char **cmd, t_env **env)
 	if (!cmdargs)
 		return;
 	handle_exp(cmdargs, env);
-	printf("ENTERD CMD : [%s] \n", cmdargs[0]);
 	if (check_builtins(cmdargs[0]))
-		exec_builtins(cmd ,cmdargs[0], &cmdargs, env);
+		exec_builtins(cmd, cmdargs[0], &cmdargs, env);
 	else
 	{
 		if (get_env(env, "PATH"))
@@ -121,17 +132,18 @@ void	handle_cmd(char **cmd, t_env **env)
 	free_array(&cmdargs);
 }
 
-void	init_shell(t_env **env)
+void init_shell(t_env **env)
 {
-	char *cmd;
-	char *path;
-	char buff[1024];
+	char	*cmd;
+	char	*path;
+	char	buff[1024];
+
 	cmd = NULL;
 	path = NULL;
 	while (1)
 	{
 		getcwd(buff, 1024);
-		
+
 		ft_putstr(buff);
 		ft_putstr(" -> ");
 		ft_getline(0, &cmd);
@@ -140,17 +152,13 @@ void	init_shell(t_env **env)
 	}
 }
 
-int main(int ac, char **av, char **environ)
+int			main(int ac, char **av, char **environ)
 {
-    t_env *env;
-	t_env *tmp;
+	t_env	*env;
+	t_env	*tmp;
+
 	env = NULL;
 	tmp = NULL;
-	if (*environ == NULL)
-	{
-		ft_putendl("Enviroment variable are not set");
-		exit(1);
-	}
 	copy_env(&env, environ);
 	init_shell(&env);
 	free_env(&env);
