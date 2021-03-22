@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   setenv.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/22 16:25:53 by nabdelba          #+#    #+#             */
+/*   Updated: 2021/03/22 16:26:30 by nabdelba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void	ft_setenv(char **cmdargs,t_env **env)
+void		ft_setenv(char **cmdargs, t_env **env)
 {
-	int i;
-	t_env *e;
+	int		i;
+	t_env	*e;
 
 	i = 0;
 	while (cmdargs[i])

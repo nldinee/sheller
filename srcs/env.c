@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/22 15:15:03 by nabdelba          #+#    #+#             */
+/*   Updated: 2021/03/22 15:18:03 by nabdelba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-t_env *new_env(char *key, char *value)
+t_env		*new_env(char *key, char *value)
 {
-	t_env *item;
+	t_env	*item;
+
 	item = NULL;
 	if (!key || !value)
 		return (NULL);
@@ -13,12 +26,12 @@ t_env *new_env(char *key, char *value)
 	return (item);
 }
 
-void env_append(t_env **env, t_env *item)
+void		env_append(t_env **env, t_env *item)
 {
-	t_env *p;
+	t_env	*p;
 
 	if (!env || !item)
-		return;
+		return ;
 	if (*env == NULL)
 		*env = item;
 	else
@@ -30,52 +43,51 @@ void env_append(t_env **env, t_env *item)
 	}
 }
 
-void env_delete(t_env **env, char *key)
+void		env_delete(t_env **env, char *key)
 {
-	t_env *tmp;
+	t_env	*tmp;
+	t_env	*prev;
 
 	tmp = *env;
-	t_env *prev;
-
-	if (tmp != NULL && ft_strcmp(tmp->key,key) == 0)
+	if (tmp != NULL && ft_strcmp(tmp->key, key) == 0)
 	{
 		*env = tmp->next;
 		tmp->value ? free(tmp->value) : NULL;
 		tmp->key ? free(tmp->key) : NULL;
 		free(tmp);
-		return;
+		return ;
 	}
-	while (tmp != NULL && ft_strcmp(tmp->key,key) != 0)
+	while (tmp != NULL && ft_strcmp(tmp->key, key) != 0)
 	{
 		prev = tmp;
 		tmp = tmp->next;
 	}
 	if (tmp == NULL)
-		return;
+		return ;
 	prev->next = tmp->next;
 	tmp->value ? free(tmp->value) : NULL;
 	tmp->key ? free(tmp->key) : NULL;
 	free(tmp);
 }
 
-t_env	*get_env(t_env **env,char *key)
+t_env		*get_env(t_env **env, char *key)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	tmp = *env;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->key, key) == 0)
-			return(tmp);
+			return (tmp);
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-void 	copy_env(t_env **env, char **environ)
+void		copy_env(t_env **env, char **environ)
 {
-	char **arr;
-	int i;
+	char	**arr;
+	int		i;
 
 	arr = NULL;
 	i = -1;
