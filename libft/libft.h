@@ -6,7 +6,7 @@
 /*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 19:08:04 by nabdelba          #+#    #+#             */
-/*   Updated: 2020/12/20 19:22:00 by nabdelba         ###   ########.fr       */
+/*   Updated: 2021/03/25 13:17:33 by nabdelba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <unistd.h>
 # include <stdint.h>
 
-# define RETURN_IF(x, ret) if (x) return (ret);
 # define BUFF_SIZE 1
 
 typedef	struct		s_list

@@ -6,7 +6,7 @@
 /*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/28 00:58:45 by nabdelba          #+#    #+#             */
-/*   Updated: 2021/03/22 16:51:22 by nabdelba         ###   ########.fr       */
+/*   Updated: 2021/03/25 13:18:18 by nabdelba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,20 @@ static int			read_file(char **tmp, t_list **file, int fd, int *sz)
 		buff[*sz] = '\0';
 		*tmp = ft_strdup((char *)(*file)->content);
 		free((*file)->content);
-		RETURN_IF(!((*file)->content = ft_strjoin(*tmp, buff)), 0);
+		if (!((*file)->content = ft_strjoin(*tmp, buff)))
+			return (0);
 		free(*tmp);
 		if (ft_strchr((char *)(*file)->content, '\n'))
 			break ;
 	}
+	return (1);
+}
+
+int					check_line(t_list *node, char **line)
+{
+	if (!(*line = ft_strdup(node->content)))
+		return (0);
+	ft_strclr(node->content);
 	return (1);
 }
 
@@ -52,19 +61,18 @@ int					ft_getline(const int fd, char **line)
 	t_list			*node;
 	char			*tmp;
 
-	RETURN_IF((read(fd, NULL, 0) < 0 || fd < 0 || !line), -1);
+	if ((read(fd, NULL, 0) < 0 || fd < 0 || !line))
+		return (-1);
 	node = handle_file(&file, fd);
-	RETURN_IF(!(read_file(&tmp, &node, fd, &sz)), -1);
+	if (!(read_file(&tmp, &node, fd, &sz)))
+		return (-1);
 	if (!ft_strlen((char *)node->content) && sz == 0)
 		return (0);
 	if (!ft_strchr(node->content, '\n') && ft_strlen((char *)node->content))
-	{
-		RETURN_IF(!(*line = ft_strdup(node->content)), 0);
-		ft_strclr(node->content);
-		return (1);
-	}
+		return (check_line(node, line));
 	tmp = ft_strdup(node->content);
-	RETURN_IF(!(*line = ft_strsub(tmp, 0, (ft_strchr(tmp, '\n') - tmp))), 0);
+	if (!(*line = ft_strsub(tmp, 0, (ft_strchr(tmp, '\n') - tmp))))
+		return (0);
 	free(node->content);
 	node->content = ft_strdup(ft_strchr(tmp, '\n') + 1);
 	free(tmp);
