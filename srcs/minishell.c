@@ -6,7 +6,7 @@
 /*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 14:50:15 by nabdelba          #+#    #+#             */
-/*   Updated: 2021/03/22 16:39:30 by nabdelba         ###   ########.fr       */
+/*   Updated: 2021/03/26 17:41:09 by nabdelba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ void		init_shell(t_env **env)
 		ft_putstr(buff);
 		ft_putstr(" -> ");
 		ft_getline(0, &cmd);
+		if (!cmd)
+			break;
 		handle_cmd(&cmd, env);
-		free(cmd);
+		ft_strdel(&cmd);
 	}
 }
 
