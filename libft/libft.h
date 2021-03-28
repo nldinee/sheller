@@ -6,7 +6,7 @@
 /*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 19:08:04 by nabdelba          #+#    #+#             */
-/*   Updated: 2021/03/25 13:17:33 by nabdelba         ###   ########.fr       */
+/*   Updated: 2021/03/28 17:45:40 by nabdelba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdint.h>
 
 # define BUFF_SIZE 1
+# define FD_SIZE 4096
 
 typedef	struct		s_list
 {

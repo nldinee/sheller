@@ -6,75 +6,69 @@
 /*   By: nabdelba <nabdelba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/28 00:58:45 by nabdelba          #+#    #+#             */
-/*   Updated: 2021/03/25 13:18:18 by nabdelba         ###   ########.fr       */
+/*   Updated: 2021/03/28 17:46:11 by nabdelba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static t_list		*handle_file(t_list **list, int fd)
+static int	appendline(char **s, char **line)
 {
-	t_list			*tmp;
+	int		len;
+	char	*tmp;
 
-	tmp = *list;
-	while (tmp)
+	len = 0;
+	while ((*s)[len] != '\n' && (*s)[len] != '\0')
+		len++;
+	if ((*s)[len] == '\n')
 	{
-		if ((int)tmp->content_size == fd)
-			return (tmp);
-		tmp = tmp->next;
+		*line = ft_strsub(*s, 0, len);
+		tmp = ft_strdup(&((*s)[len + 1]));
+		free(*s);
+		*s = tmp;
+		if ((*s)[0] == '\0')
+			ft_strdel(s);
 	}
-	tmp = ft_lstnew("", fd);
-	ft_lstadd(list, tmp);
-	return (tmp);
+	else
+	{
+		*line = ft_strdup(*s);
+		ft_strdel(s);
+	}
+	return (1);
 }
 
-static int			read_file(char **tmp, t_list **file, int fd, int *sz)
+static int	output(char **s, char **line, int ret, int fd)
 {
-	char			buff[BUFF_SIZE + 1];
+	if (ret < 0)
+		return (-1);
+	else if (ret == 0 && s[fd] == NULL)
+		return (0);
+	else
+		return (appendline(&s[fd], line));
+}
 
-	while ((*sz = read(fd, buff, BUFF_SIZE)) && *sz != 0)
+int			ft_getline(const int fd, char **line)
+{
+	int			ret;
+	static char	*s[FD_SIZE];
+	char		buff[BUFF_SIZE + 1];
+	char		*tmp;
+
+	if (fd < 0 || line == NULL)
+		return (-1);
+	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
 	{
-		buff[*sz] = '\0';
-		*tmp = ft_strdup((char *)(*file)->content);
-		free((*file)->content);
-		if (!((*file)->content = ft_strjoin(*tmp, buff)))
-			return (0);
-		free(*tmp);
-		if (ft_strchr((char *)(*file)->content, '\n'))
+		buff[ret] = '\0';
+		if (s[fd] == NULL)
+			s[fd] = ft_strdup(buff);
+		else
+		{
+			tmp = ft_strjoin(s[fd], buff);
+			free(s[fd]);
+			s[fd] = tmp;
+		}
+		if (ft_strchr(s[fd], '\n'))
 			break ;
 	}
-	return (1);
-}
-
-int					check_line(t_list *node, char **line)
-{
-	if (!(*line = ft_strdup(node->content)))
-		return (0);
-	ft_strclr(node->content);
-	return (1);
-}
-
-int					ft_getline(const int fd, char **line)
-{
-	static t_list	*file;
-	int				sz;
-	t_list			*node;
-	char			*tmp;
-
-	if ((read(fd, NULL, 0) < 0 || fd < 0 || !line))
-		return (-1);
-	node = handle_file(&file, fd);
-	if (!(read_file(&tmp, &node, fd, &sz)))
-		return (-1);
-	if (!ft_strlen((char *)node->content) && sz == 0)
-		return (0);
-	if (!ft_strchr(node->content, '\n') && ft_strlen((char *)node->content))
-		return (check_line(node, line));
-	tmp = ft_strdup(node->content);
-	if (!(*line = ft_strsub(tmp, 0, (ft_strchr(tmp, '\n') - tmp))))
-		return (0);
-	free(node->content);
-	node->content = ft_strdup(ft_strchr(tmp, '\n') + 1);
-	free(tmp);
-	return (1);
+	return (output(s, line, ret, fd));
 }
